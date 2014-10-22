@@ -2,8 +2,9 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class Hangman {
+public class Hangman{
 
+    //retrieves list of possible words from a website
     public static String[] getWordBank() throws Exception {
 
         URL wordbank = new URL("https://raw.githubusercontent.com/Tom25/Hangman/master/wordlist.txt");
@@ -17,6 +18,7 @@ public class Hangman {
         return words.toArray(new String[0]);
     }
 
+    //selects a word based on difficulty(number of letters)
     public static String getWord(int difficulty, String[] wordbank){
         String word;
         while(true){
@@ -27,6 +29,7 @@ public class Hangman {
         }
         return word;
     }
+
 
     public static void main(String[] args) throws Exception{
         //User input difficulty
@@ -41,5 +44,8 @@ public class Hangman {
         for(char i : wordChars){
             System.out.print(i + " ");
         }
+
     }
+
+
 }
