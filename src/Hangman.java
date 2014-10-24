@@ -30,22 +30,102 @@ public class Hangman{
         return word;
     }
 
-
-    public static void main(String[] args) throws Exception{
-        //User input difficulty
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter desired difficulty: 1-10");
-        int difficulty = sc.nextInt();
-        //retrieves word
-        String[] wordbank = (getWordBank());
-        String word = getWord(difficulty, wordbank);
-        //converts to Chars
-        char[] wordChars = word.toCharArray();
-        for(char i : wordChars){
-            System.out.print(i + " ");
+    public static boolean checkGuess(String guessString, char[] wordChars){
+        boolean correctGuess = false;
+        char guess = guessString.charAt(0);
+        for(int i = 0; i < wordChars.length; i++){
+            if(guess == wordChars[i]){
+                correctGuess = true;
+            }
         }
-
+        return(correctGuess);
     }
 
+    public static boolean[] modifyArray(boolean[] guessedLetter, String guessString, char[] wordChars){
+        char guess = guessString.charAt(0);
+        for(int i = 0; i < wordChars.length; i++) {
+            if (guess == wordChars[i]) {
+                guessedLetter[i] = true;
+            }
+        }
+        return guessedLetter;
+    }
 
+    public static boolean checkWin(boolean[] guessedLetter){
+        for(boolean letter : guessedLetter){
+            if(!letter){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) throws Exception{
+        while(true) {
+            String[] letters = {
+                "null", "null", "null", "null", "null"
+            };
+            int turns = 0;
+            int mistakes = 0;
+            //User input difficulty
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Enter desired difficulty: 1-10");
+            int difficulty = sc.nextInt();
+            //retrieves word
+            String[] wordbank = (getWordBank());
+            String word = getWord(difficulty, wordbank);
+            //converts to Chars
+            char[] wordChars = word.toCharArray();
+            //true if letter has been correctly guessed, false otherwise
+            boolean[] guessedLetter = new boolean[wordChars.length];
+            boolean win = false;
+            boolean playing = true;
+            while (playing) {
+                //prints the word, substituting _ for letters not yet guessed
+                for (int i = 0; i < wordChars.length; i++) {
+                    if (guessedLetter[i]) {
+                        System.out.print(wordChars[i] + " ");
+                    } else {
+                        System.out.print(" _ ");
+                    }
+                }
+                System.out.println("\nGuess a letter");
+                String guess = sc.next();
+                boolean correctGuess = checkGuess(guess, wordChars);
+                boolean repeatguess = false;
+                for(int i = 0; i < letters.length; i++) {
+                    if (letters[i].equals(guess)) {
+                        repeatguess = true;
+                    }
+                }
+                if(repeatguess){
+                    System.out.println("Already guessed " + guess + " !\n");
+                } else if (!correctGuess) {
+                    mistakes++;
+                    System.out.println("\nSorry, incorrect guess! You have " + (6 - mistakes) + " tries left!\n");
+                    letters[mistakes-1] = guess;
+                } else {
+                    guessedLetter = modifyArray(guessedLetter, guess, wordChars);
+                    System.out.println("Correct!\n");
+                }
+                //detects endgame state
+                if (mistakes == 6) {
+                    playing = false;
+                }
+                if (checkWin(guessedLetter)) {
+                    win = true;
+                    playing = false;
+                }
+                turns++;
+            }
+            System.out.println(win ? "Congratulations! You won in " + turns + " turns!" : "You are dead! The word was " + word + ".");
+            System.out.println("Again? y/n");
+            if (sc.next().equals("n")) {
+                return;
+            }
+            for(int i = 0; i < 100; i++){
+                System.out.println();
+            }
+        }
+    }
 }
