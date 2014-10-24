@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Hangman{
 
-    //retrieves list of possible words from a website
+    //retrieves list of possible words from a txt file on website
     public static String[] getWordBank() throws Exception {
 
         URL wordbank = new URL("https://raw.githubusercontent.com/Tom25/Hangman/master/wordlist.txt");
@@ -29,7 +29,7 @@ public class Hangman{
         }
         return word;
     }
-
+    //checks whether or not a guess is correct, returns true or false
     public static boolean checkGuess(String guessString, char[] wordChars){
         boolean correctGuess = false;
         char guess = guessString.charAt(0);
@@ -41,6 +41,7 @@ public class Hangman{
         return(correctGuess);
     }
 
+    //modify the Boolean array of whether or not a letter has been guessed
     public static boolean[] modifyArray(boolean[] guessedLetter, String guessString, char[] wordChars){
         char guess = guessString.charAt(0);
         for(int i = 0; i < wordChars.length; i++) {
@@ -50,7 +51,7 @@ public class Hangman{
         }
         return guessedLetter;
     }
-
+   //returns true if all letters are guessed, winning the game
     public static boolean checkWin(boolean[] guessedLetter){
         for(boolean letter : guessedLetter){
             if(!letter){
@@ -61,27 +62,44 @@ public class Hangman{
     }
 
     public static void main(String[] args) throws Exception{
-        while(true) {
+           //retrieves list of possible words once when starting the program
+           String[] wordbank = (getWordBank());
+     //loop runs each time a new game starts
+     while(true) {
+            //stores all incorrect guesses
             String[] letters = {
                 "null", "null", "null", "null", "null"
             };
             int turns = 0;
             int mistakes = 0;
+     Scanner sc = new Scanner(System.in);
+     Boolean gotWord = false;
+     while(!gotWord){
+           System.out.println("Enter desired player number, 1 or 2");
+     int playerCount = sc.nextInt();
+     if(playerCount == 1){
             //User input difficulty
-            Scanner sc = new Scanner(System.in);
             System.out.println("Enter desired difficulty: 1-10");
             int difficulty = sc.nextInt();
             //retrieves word
-            String[] wordbank = (getWordBank());
             String word = getWord(difficulty, wordbank);
+            gotWord = true;
+            } else if(playerCount = 2){
+	      System.out.println(“Player 1, enter a word with no capital letters!”);
+             String word = sc.next();
+            gotWord = true;
+            } else {
+            System.out.println(“Enter a 1 or 2”);
+            }
             //converts to Chars
             char[] wordChars = word.toCharArray();
             //true if letter has been correctly guessed, false otherwise
             boolean[] guessedLetter = new boolean[wordChars.length];
             boolean win = false;
             boolean playing = true;
+            //loop runs each new turn in the game
             while (playing) {
-                //prints the word, substituting _ for letters not yet guessed
+                //prints the word, substituting “_” for letters not yet guessed
                 for (int i = 0; i < wordChars.length; i++) {
                     if (guessedLetter[i]) {
                         System.out.print(wordChars[i] + " ");
@@ -89,7 +107,8 @@ public class Hangman{
                         System.out.print(" _ ");
                     }
                 }
-                System.out.println("\nGuess a letter");
+               //gets player guess and checks for correctness and repeatness 
+    		  System.out.println("\nGuess a letter");
                 String guess = sc.next();
                 boolean correctGuess = checkGuess(guess, wordChars);
                 boolean repeatguess = false;
@@ -108,7 +127,7 @@ public class Hangman{
                     guessedLetter = modifyArray(guessedLetter, guess, wordChars);
                     System.out.println("Correct!\n");
                 }
-                //detects endgame state
+                //detects endgame state, either a win or a lose
                 if (mistakes == 6) {
                     playing = false;
                 }
@@ -119,7 +138,8 @@ public class Hangman{
                 turns++;
             }
             System.out.println(win ? "Congratulations! You won in " + turns + " turns!" : "You are dead! The word was " + word + ".");
-            System.out.println("Again? y/n");
+            //gets input for whether the player desires a new game.
+     System.out.println("Again? y/n");
             if (sc.next().equals("n")) {
                 return;
             }
