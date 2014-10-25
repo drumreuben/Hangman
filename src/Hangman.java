@@ -68,7 +68,7 @@ public class Hangman{
      while(true) {
             //stores all incorrect guesses
             String[] letters = {
-                "null", "null", "null", "null", "null"
+                "null", "null", "null", "null", "null, null"
             };
             int turns = 0;
             int mistakes = 0;
@@ -80,6 +80,7 @@ public class Hangman{
             String word = getWord(difficulty, wordbank);
             //converts to Chars
             char[] wordChars = word.toCharArray();
+            System.out.println("Word is " + wordChars.length + " letters long.");
             //true if letter has been correctly guessed, false otherwise
             boolean[] guessedLetter = new boolean[wordChars.length];
             boolean win = false;
@@ -124,7 +125,7 @@ public class Hangman{
                 }
                 turns++;
             }
-            System.out.println(win ? "Congratulations! You won in " + turns + " turns!" : "You are dead! The word was " + word + ".");
+            System.out.println(win ? "Congratulations, you guessed the word " + word + "in " + turns + " turns!" : "You are dead! The word was " + word + ".");
             //gets input for whether the player desires a new game.
      System.out.println("Again? y/n");
             if (sc.next().equals("n")) {
